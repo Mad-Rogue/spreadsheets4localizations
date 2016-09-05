@@ -2,6 +2,8 @@
 
 class Item {
 
+    public $translatable = true;
+    public $formatted = true;
     public $key;
     public $value;
     public $type;
@@ -53,6 +55,8 @@ function parseXml($filename) {
         if (strcmp($child->nodeName, "string") === 0) {
             $item = new Item();
             $item->key = $child->getAttribute('name');
+            $item->translatable = (strcmp("false", $child->getAttribute('translatable')) == 0) ? false : true;
+            $item->formatted = (strcmp("false", $child->getAttribute('formatted')) == 0) ? false : true;
             $item->value = $child->nodeValue;
             $item->type = $child->nodeName;
             $item->items = null;
@@ -161,7 +165,14 @@ if (count($argv) == 3) {
             $item = $val[$key];
             if ($first) {
                 $first = false;
-                $result.= $item->type . "\t" . $key;
+                $result.= $item->type;
+                if (!$item->formatted) {
+                    $result.= "/nf";
+                }
+                if (!$item->translatable) {
+                    $result.= "/tf";
+                }
+                $result.= "\t" . $key;
                 if ($item->type == "string-array") {
                     $array_values = array();
                 }

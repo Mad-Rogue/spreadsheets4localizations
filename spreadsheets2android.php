@@ -11,13 +11,16 @@ function endsWith($haystack, $needle) {
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
 }
 
-function addItem($doc, $root, $type, $name, $value, $nf = false) {
+function addItem($doc, $root, $type, $name, $value, $nf = false, $tf = false) {
     $title = $doc->createElement($type);
     if (strlen($name) > 0) {
         $title->setAttribute("name", $name);
     }
     if ($nf) {
         $title->setAttribute("formatted", "false");
+    }
+    if ($tf) {
+        $title->setAttribute("translatable", "false");
     }
     $title = $root->appendChild($title);
 
@@ -73,8 +76,9 @@ function processData($file, $outpath) {
             if (strlen($values[0]) > 0 && strlen($values[1]) > 0) {
                 $type = getItemType($values[0]);
                 $nf = checkFlag($values[0], "nf");
+                $tf = checkFlag($values[0], "tf");
                 if (strcmp($type, "string") == 0 && ($empty_items || strlen(getValue($values, $index)) > 0)) {
-                    addItem($doc, $root, $type, $values[1], getValue($values, $index), $nf);
+                    addItem($doc, $root, $type, $values[1], getValue($values, $index), $nf, $tf);
                 } else if (strcmp($type, "string-array") == 0) {
                     $item = $doc->createElement($type);
                     $item->setAttribute("name", $values[1]);
