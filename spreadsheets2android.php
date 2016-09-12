@@ -86,9 +86,12 @@ function processData($file, $outpath) {
 
                     while ($e + 1 < $keys && strcmp($localizations[$e + 1][0], "item") == 0) {
                         ++$e;
-                        ++$count;
                         $values = $localizations[$e];
-                        addItem($doc, $item, "item", null, getValue($values, $index));
+                        $value = getValue($values, $index);
+                        if(strlen($value) > 0) {
+                            ++$count;
+                        }
+                        addItem($doc, $item, "item", null, $value);
                     }
                     if ($count > 0) {
                         $root->appendChild($item);
