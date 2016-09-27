@@ -1,4 +1,9 @@
 <?php
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')           
+    define("SEPARATOR", "\\");
+else 
+    define("SEPARATOR", "/");
+
 
 class Item {
 
@@ -115,12 +120,12 @@ function processData($file, $outpath) {
                 $title->appendChild($text);
             }
         }
-        $path = $outpath . "\\" . getFolderName($locale);
+        $path = $outpath.DIRECTORY_SEPARATOR. getFolderName($locale);
         echo "\n" . $path;
         if (!file_exists($path)) {
             mkdir($path, "0777", true);
         }
-        $doc->save($path . "/strings.xml");
+        $doc->save($path.DIRECTORY_SEPARATOR."strings.xml");
     }
     return false;
 }
@@ -133,8 +138,8 @@ if (count($argv) == 3) {
     $localizations = array();
     $hashset = array();
     foreach ($list as $path) {
-        $strings_path = $in . "\\" . $path . "\\strings.xml";
-        if (!is_dir($in . "\\" . $path) || !file_exists($strings_path))
+        $strings_path = $in . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR."strings.xml";
+        if (!is_dir($in . DIRECTORY_SEPARATOR . $path) || !file_exists($strings_path))
             continue;
         $locale = getLocale($path);
         $map = parseXml($strings_path);

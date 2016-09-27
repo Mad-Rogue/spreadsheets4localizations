@@ -1,4 +1,8 @@
 <?php
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')           
+    define("SEPARATOR", "\\");
+else 
+    define("SEPARATOR", "/");
 
 function getFolderName($key) {
     if (strtolower($key) == "default") {
@@ -87,10 +91,10 @@ function processData($file, $outpath) {
                     while ($e + 1 < $keys && strcmp($localizations[$e + 1][0], "item") == 0) {
                         ++$e;
                         $values = $localizations[$e];
-                        $value = getValue($values, $index);
-                        if(strlen($value) > 0) {
-                            ++$count;
-                        }
+			$value = getValue($values, $index);
+			if(strlen($value) > 0) {
+	                        ++$count;
+			}
                         addItem($doc, $item, "item", null, $value);
                     }
                     if ($count > 0) {
@@ -99,12 +103,12 @@ function processData($file, $outpath) {
                 }
             }
         }
-        $path = $outpath . "\\" . getFolderName($locale);
-        echo "\n" . $path;
+        $path = $outpath.DIRECTORY_SEPARATOR.getFolderName($locale);
+        echo "$path";
         if (!file_exists($path)) {
             mkdir($path, "0777", true);
         }
-        $doc->save($path . "/strings.xml");
+        echo " - ".$doc->save($path. DIRECTORY_SEPARATOR."strings.xml")."\n";
     }
     return false;
 }
